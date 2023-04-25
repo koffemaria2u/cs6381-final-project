@@ -25,26 +25,49 @@ etcd
 
 # Terminal 2
 python pyetcd_api.py
-#>>>> Status
-#cluster id : '14841639068965178418'
-#first member info : {'ID': '10276657743932975437', 'name': 'default', 'peerURLs': ['http://localhost:2380'], 'clientURLs': ['http://localhost:2379']}
-#>>>> Lease
-#Lease id : 7587870135924071463
-#Lease ttl : 29
-#Lease refresh : 30
-#Key put foo2 : True
-#Key put foo3 : True
-#Lease Keys : [b'foo2', b'foo3']
-#Lease Revoke : True
-#Key get foox : []
-#Key put foo : True
-#Key get foo : [b'bar']
-#Key delete foo : True
-#Key delete foo-unknown : False
-#>>>> Lock
-#acquire : True
-#refresh : 10000
-#is_acquired : True
-#release : True
-#is_acquired : False
+#EtcdClient - INFO - cluster id STATUS: '14841639068965178418'
+#EtcdClient - INFO - first MEMBER info : {'ID': '10276657743932975437', 'name': 'default', 'peerURLs': ['http://localhost:2380'], 'clientURLs': ['http://localhost:2379']}
+#EtcdClient - INFO - demo LEASE...
+#EtcdClient - INFO - LEASE id : 7587870180556262441
+#EtcdClient - INFO - LEASE ttl : 29
+#EtcdClient - INFO - LEASE refresh : 30
+#EtcdClient - INFO - Key PUT foo2 : True
+#EtcdClient - INFO - Key PUT foo3 : True
+#EtcdClient - INFO - LEASE Keys : [b'foo2', b'foo3']
+#EtcdClient - INFO - LEASE Revoke : True
+#EtcdClient - INFO - demo basic PUT/GET/DELETE keys...
+#EtcdClient - INFO - Key GET foox : []
+#EtcdClient - INFO - Key PUT foo : True
+#EtcdClient - INFO - Key GET foo : [b'bar']
+#EtcdClient - INFO - Key DELETE foo : True
+#EtcdClient - INFO - Key DELETE foo-unknown : False
+#EtcdClient - INFO - demo LOCK...
+#EtcdClient - INFO - acquire : True
+#EtcdClient - INFO - refresh : 10000
+#EtcdClient - INFO - is_acquired : True
+#EtcdClient - INFO - release : True
+#EtcdClient - INFO - is_acquired : False
+#EtcdClient - INFO - demo WATCH...
+#EtcdClient - INFO - Key PUT watch_key : True
+#EtcdClient - INFO - Key GET watch_key : [b'watch_value']
+#EtcdClient - INFO - {'kv': {'key': b'watch_key', 'create_revision': '51', 'mod_revision': '139', 'version': '12', 'value': b'new_val'}}
+#EtcdClient - INFO - Watch count: 1
+#EtcdClient - INFO - {'kv': {'key': b'watch_key', 'create_revision': '51', 'mod_revision': '140', 'version': '13', 'value': b'watch_value'}}
+#EtcdClient - INFO - Watch count: 2
+#EtcdClient - INFO - {'kv': {'key': b'watch_key', 'create_revision': '51', 'mod_revision': '141', 'version': '14', 'value': b'new_val'}}
+#EtcdClient - INFO - Watch count: 3
+#EtcdClient - INFO - And now his watch is ended...
+
+# Terminal 3
+python watcher_etcd_api.py -w watch_key -ov init_val -nv new_val
+python watcher_etcd_api.py -w watch_key -ov new_val -nv newer_val
+python watcher_etcd_api.py -w watch_key -ov newer_val -nv even_newer_val
 ```
+
+## Demo Images
+Watcher demo:
+![alt text](etcd/resources/etcd_watcher_demo.png "Title")
+
+
+CLI `etcdctl` demo:
+![alt text](etcd/resources/etcdctl_cli_demo.png "Title")

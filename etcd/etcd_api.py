@@ -1,3 +1,5 @@
+import time
+
 from etcd3gw.client import Etcd3Client
 from etcd3gw.lock import Lock
 import logging
@@ -16,52 +18,78 @@ logger = logging.getLogger("EtcdClient")
 def main():
     client = Etcd3Client()
 
-    print('>>>> Status')
     result = client.status()
-    print("cluster id : %r" % result['header']['cluster_id'])
+    logger.info("cluster id STATUS: %r" % result['header']['cluster_id'])
 
     result = client.members()
-    print("first member info : %r" % result[0])
+    logger.info("first MEMBER info : %r" % result[0])
 
-    print('>>>> Lease')
+    logger.info("demo LEASE...")
     lease = client.lease()
-    print("Lease id : %r" % lease.id)
-    print("Lease ttl : %r" % lease.ttl())
-    print("Lease refresh : %r" % lease.refresh())
+    logger.info("LEASE id : %r" % lease.id)
+    logger.info("LEASE ttl : %r" % lease.ttl())
+    logger.info("LEASE refresh : %r" % lease.refresh())
 
     result = client.put('foo2', 'bar2', lease)
-    print("Key put foo2 : %r" % result)
+    logger.info("Key PUT foo2 : %r" % result)
     result = client.put('foo3', 'bar3', lease)
-    print("Key put foo3 : %r" % result)
-    print("Lease Keys : %r" % lease.keys())
-
+    logger.info("Key PUT foo3 : %r" % result)
+    logger.info("LEASE Keys : %r" % lease.keys())
     result = lease.revoke()
-    print("Lease Revoke : %r" % result)
+    logger.info("LEASE Revoke : %r" % result)
 
+    logger.info("demo basic PUT/GET/DELETE keys...")
     result = client.get('foox')
-    print("Key get foox : %r" % result)
+    logger.info("Key GET foox : %r" % result)
 
     result = client.put('foo', 'bar')
-    print("Key put foo : %r" % result)
-    result = client.get('foo')
-    print("Key get foo : %r" % result)
-    result = client.delete('foo')
-    print("Key delete foo : %r" % result)
-    result = client.delete('foo-unknown')
-    print("Key delete foo-unknown : %r" % result)
+    logger.info("Key PUT foo : %r" % result)
 
-    print('>>>> Lock')
+    result = client.get('foo')
+    logger.info("Key GET foo : %r" % result)
+
+    result = client.delete('foo')
+    logger.info("Key DELETE foo : %r" % result)
+
+    result = client.delete('foo-unknown')
+    logger.info("Key DELETE foo-unknown : %r" % result)
+
+    logger.info('demo LOCK...')
     lock = Lock('xyz-%s' % clock(), ttl=10000, client=client)
     result = lock.acquire()
-    print("acquire : %r" % result)
+    logger.info("acquire : %r" % result)
+
     result = lock.refresh()
-    print("refresh : %r" % result)
+    logger.info("refresh : %r" % result)
+
     result = lock.is_acquired()
-    print("is_acquired : %r" % result)
+    logger.info("is_acquired : %r" % result)
+
     result = lock.release()
-    print("release : %r" % result)
+    logger.info("release : %r" % result)
+
     result = lock.is_acquired()
-    print("is_acquired : %r" % result)
+    logger.info("is_acquired : %r" % result)
+
+    logger.info('demo WATCH...')
+    result = client.put('watch_key', 'init_val')
+    logger.info("Key PUT watch_key : %r" % result)
+    result = client.get('watch_key')
+    logger.info("Key GET watch_key : %r" % result)
+
+    logger.info('Watch watch_key')
+    watcher, watch_cancel = client.watch(key='watch')
+    # watcher, watch_cancel = client.watch_once(key='watch', timeout=10)
+
+    watch_count = 0
+    for event in watcher:  # blocks until event comes, cancel via watch_cancel()
+        logger.info(event)
+        watch_count += 1
+        logger.info("Watch count: %s" % watch_count)
+        if watch_count > 2:
+            watch_cancel()
+
+    logger.info("And now his watch is ended...")
 
 
 if __name__ == "__main__":
