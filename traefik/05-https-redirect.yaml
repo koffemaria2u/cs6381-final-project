@@ -1,0 +1,26 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: redirect-https
+  namespace: whoami
+spec:
+  redirectScheme:
+    permanent: true
+    scheme: https
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: whoami-https-redirect
+  namespace: whoami
+spec:
+  entryPoints:
+  - web
+  routes:
+  - kind: Rule
+    match: Host("whoami.demo-lab.dev")
+    services:
+    - name: whoami
+      port: 8080
+    middlewares:
+    - name: redirect-https

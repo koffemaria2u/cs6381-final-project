@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: whoami
+  namespace: whoami
+spec:
+  commonName: whoami.demo-lab.dev
+  dnsNames:
+  - whoami.demo-lab.dev
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-staging
+  secretName: whoami-cert

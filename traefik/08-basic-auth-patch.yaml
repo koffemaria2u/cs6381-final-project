@@ -1,0 +1,10 @@
+- op: add
+  path: /spec/routes
+  value:
+    - kind: Rule
+      match: Host("whoami.demo-lab.dev")
+      services:
+      - name: whoami
+        port: web
+      middlewares:
+        - name: whoami-auth
