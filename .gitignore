@@ -162,3 +162,6 @@ cython_debug/
 # custom
 .idea/
 etcd/trash
+
+# node artifacts
+node_modules
