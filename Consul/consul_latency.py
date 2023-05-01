@@ -61,7 +61,7 @@ def main():
 		end = time.perf_counter()
 				
 		print(f'Total time elapsed: {end-start:0.2f} seconds')	
-		data = pd.DataFrame([{"Thread Count": threads, "Total Time" : (start - end)}])
+		data = pd.DataFrame([{"Thread Count": threads, "Total Time" : (end - start)}])
 		throughput = pd.concat([throughput, data], axis=0, ignore_index=True)
 
 	throughput.to_csv(PATH + "Threads_Total_Time.csv", encoding='utf-8', index=False)
