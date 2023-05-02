@@ -6,13 +6,13 @@ import os
 import pandas as pd
 import csv
 
-PATH = os.getcwd() + "/consul_latency_graphing/"
+PATH = os.getcwd() 
 
 
 #average key per second 
 def write_to_csv(threads, latency):
         
-    csvPath = PATH + "Request_Latency.csv"
+    csvPath = PATH + "/Request_Latency.csv"
     if not os.path.exists(csvPath):
         with open (csvPath, 'w', newline = "", encoding='utf-8') as writeHeader:
             writer = csv.writer(writeHeader)
@@ -64,7 +64,7 @@ def main():
 		data = pd.DataFrame([{"Thread Count": threads, "Total Time" : (end - start)}])
 		throughput = pd.concat([throughput, data], axis=0, ignore_index=True)
 
-	throughput.to_csv(PATH + "Threads_Total_Time.csv", encoding='utf-8', index=False)
+	throughput.to_csv(PATH + "/Threads_Total_Time.csv", encoding='utf-8', index=False)
 	
 main()
 
