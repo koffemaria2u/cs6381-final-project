@@ -29,18 +29,29 @@ def latency_info_per_thread(latency_df, tech_name):
 
 
 def average_latency_per_request(etcd_latency_df, consul_latency_df):
+    # setup subplots
+    fig, axes = plt.subplots(2, 1, figsize=(8, 6))
+    fig.suptitle("Average Latency Times for Key/Value Creation")
+
+    # etcd subplots
     etcd_df_by_threads = etcd_latency_df.groupby('Threads', as_index=False)["Latency"].mean()
-    plt.plot(threads, etcd_df_by_threads["Latency"], color=etcd_color, label="etcd", marker="o")
+    axes[0].plot(threads, etcd_df_by_threads["Latency"], color=etcd_color, label="etcd", marker="o")
+    axes[0].title.set_text("etcd")
+    axes[0].set_xlabel("Concurrent Clients")
+    axes[0].set_ylabel("Latency (s)")
+    axes[0].legend(loc="upper left")
 
+    # consul subplots
     consul_df_by_threads = consul_latency_df.groupby('Threads', as_index=False)["Latency"].mean()
-    plt.plot(threads, consul_df_by_threads["Latency"], color=consuls_color, label="consul", marker="o")
+    axes[1].plot(threads, consul_df_by_threads["Latency"], color=consuls_color, label="Consul", marker="o")
+    axes[1].title.set_text("Consul")
+    axes[1].set_xlabel("Concurrent Clients")
+    axes[1].set_ylabel("Latency (s)")
+    axes[1].legend(loc="upper left")
 
-    plt.xticks(threads)
-    plt.title("Average Latency Times for Key/Value Creation")
-    plt.xlabel("Concurrent Clients")
-    plt.ylabel("Latency (s)")
+    fig.tight_layout()
     plt.legend()
-    plt.savefig(dirPath + "/etcd/results_graphs/combined_Average_KV_Latency.jpg")
+    plt.savefig(dirPath + "/etcd/results_graphs/subplot_combined_Average_KV_Latency.jpg")
     plt.show()
 
 
@@ -61,21 +72,31 @@ def box_plot_summary(latency_df, tech_name, color):
 
 
 def throughput_graph(throughput_df_etcd, throughput_df_consul):
-    # etcd throughput
+    # setup subplot
+    fig, axes = plt.subplots(2, 1, figsize=(8, 6))
+    fig.suptitle("Key/Value Creation Throughput - 100,000 KV created")
+
+    # etcd subplots
     throughput_df_etcd["KV/Sec"] = 100000 / throughput_df_etcd["Round_Trip"]
-    plt.plot(throughput_df_etcd["Thread_Count"], throughput_df_etcd["KV/Sec"], color=etcd_color, label="etcd", marker="o")
-    plt.xticks(throughput_df_etcd["Thread_Count"])
+    axes[0].plot(throughput_df_etcd["Thread_Count"], throughput_df_etcd["KV/Sec"],
+                 color=etcd_color, label="etcd", marker="o")
+    axes[0].title.set_text("etcd")
+    axes[0].set_xlabel("Concurrent Clients")
+    axes[0].set_ylabel("Average KV Creation per Second")
+    axes[0].legend(loc="upper left")
 
-    # consul throughput
+    # consul subplots
     throughput_df_consul["KV/Sec"] = 100000 / throughput_df_consul["Round_Trip"]
-    plt.plot(throughput_df_consul["Thread_Count"], throughput_df_consul["KV/Sec"], color=consuls_color, label="consul", marker="o")
-    plt.xticks(throughput_df_consul["Thread_Count"])
+    axes[1].plot(throughput_df_consul["Thread_Count"], throughput_df_consul["KV/Sec"],
+                 color=consuls_color, label="Consul", marker="o")
+    axes[1].title.set_text("Consul")
+    axes[1].set_xlabel("Concurrent Clients")
+    axes[1].set_ylabel("Average KV Creation per Second")
+    axes[1].legend(loc="upper left")
 
-    plt.title("Key/Value Creation Throughput - 100,000 KV created")
-    plt.xlabel("Concurrent Clients")
-    plt.ylabel("Average KV Creation per Second")
+    fig.tight_layout()
     plt.legend()
-    plt.savefig(dirPath + "/etcd/results_graphs/combined_KV_Throughput.jpg")
+    plt.savefig(dirPath + "/etcd/results_graphs/subplot_combined_KV_Throughput.jpg")
     plt.show()
 
 
