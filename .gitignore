@@ -162,6 +162,7 @@ cython_debug/
 # custom
 .idea/
 etcd/trash
+.DS_Store
 
 # node artifacts
 node_modules
