@@ -1,17 +1,16 @@
-# cs6381-final-project
-Service management exploration
+# etcd
+- [etcd quickstart](https://etcd.io/docs/v3.5/quickstart/)
+- `etcdctl` - [etcd cli commands](https://etcd.io/docs/v3.4/dev-guide/interacting_v3/)
 
-
-## etcd
-### Usage
+## Usage
 To run on Ubuntu 22.04:
 1. [Install etcd on Ubuntu 22.04](https://snapcraft.io/install/etcd-arm64/ubuntu)
 2. Python 3.8.16
 3. [etcd3gw](https://pypi.org/project/etcd3gw/) 
 4. Create python venv
-5. Run `etcd`
+5. Run `etcd` client
 
-
+### Run Concurrent Latency Tests
 ```bash
 python -m venv env_38
 source env_38/bin/activate
@@ -20,6 +19,23 @@ pip install etcd3gw
 python -V
 # Python 3.8.16
 
+# to run concurrent latency tests
+# Terminal 1
+etcd
+
+# Terminal 2
+# this will output results in /results_data dir
+python etcd/etcd_concurrent_latency_test.py
+
+# this will take csv data from consul && etcd respective dirs
+# output graphs in etcd/results_graphs dir
+python etcd/utils_graphs.py
+```
+
+
+### Run Watcher Demo
+```bash
+# to run watcher demo
 # Terminal 1
 etcd
 
@@ -66,12 +82,8 @@ python watcher_etcd_api.py -w watch_key -ov newer_val -nv even_newer_val
 
 ## Demo Images
 Watcher demo:
-![alt text](etcd/resources/etcd_watcher_demo.png "Title")
+![alt text](resources/etcd_watcher_demo.png "Title")
 
 
 CLI `etcdctl` demo:
-![alt text](etcd/resources/etcdctl_cli_demo.png "Title")
-
-
-## Resources
-1. `etcdctl` - [etcd cli commands](https://etcd.io/docs/v3.4/dev-guide/interacting_v3/) 
+![alt text](resources/etcdctl_cli_demo.png "Title")
